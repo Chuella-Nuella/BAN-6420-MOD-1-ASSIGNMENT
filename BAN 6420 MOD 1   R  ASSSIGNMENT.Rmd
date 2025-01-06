@@ -1,0 +1,32 @@
+# Load necessary libraries
+library(dplyr)
+# Define constants
+min_salary <- 7500
+max_salary <- 30000
+num_workers <- 400
+# Generate workers dynamically
+workers <- data.frame(
+  name = paste("Worker", 1:num_workers),
+  salary = round(runif(num_workers, min_salary, max_salary), 2),
+  gender = sample(c("Male", "Female"), num_workers, replace = TRUE),
+  employee_level = character(num_workers)
+)
+# Calculate employee level
+workers$employee_level <- ifelse(workers$salary > 10000 & workers$salary < 20000, "A1",
+                                 ifelse(workers$salary > min_salary & workers$salary < max_salary & workers$gender == "Female", "A5-F", ""))
+# Generate payment slips using for loop
+for (i in 1:nrow(workers)) {
+  tryCatch(
+    expr = {
+      cat("Payment Slip for", workers$name[i], ":\n")
+      cat("Salary: $", workers$salary[i], "\n")
+      cat("Employee Level:", workers$employee_level[i], "\n")
+      cat(strrep("-", 30), "\n")
+    },
+    error = function(e) {
+      cat("Error generating payment slip for", workers$name[i], ":", as.character(e), "\n")
+    }
+  )
+}
+
+
